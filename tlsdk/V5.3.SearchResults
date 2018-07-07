@@ -1,0 +1,6 @@
+---- DEVICE_ID_ADDRESS_E 匹配 (1 in 1 文件) ----
+Default_config.h (vendor\common):#define		DEVICE_ID_ADDRESS_E		0x800074
+---- DEVICE_ID_ADDRESS_E 搜索遇到错误 (2) ----
+以下2个文件不能被处理：
+E:\project\product\hamster\hamster_sdk_1206_v2.0_v5.3\tlsdk\V5.3.IAB : 文件打不开。
+E:\project\product\hamster\hamster_sdk_1206_v2.0_v5.3\tlsdk\V5.3.IMB : 文件打不开。
