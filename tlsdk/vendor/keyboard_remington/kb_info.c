@@ -15,14 +15,14 @@
 
 
 //u8 deep_count;
-extern int kb_is_lock_pressed;
+extern int kb_fn_is_locked;
 void kb_info_load(void)
 {
 #if 1
 	kb_status.mode_link = analog_read(PM_REG_MODE_LINK);
 	u8 check_read = analog_read(PM_REG_CHECK);
 	//deep_count = analog_read(PM_REG_COUNT);
-	kb_is_lock_pressed = analog_read(PM_REG_LOCK);
+	kb_fn_is_locked = analog_read(PM_REG_LOCK);
 	u8 check_cal = 0;
 	u8 * pd = (u8 *) (&kb_status.dongle_id);
 	for (u8 i = PM_REG_DONGLE_ID_START; i <= PM_REG_DONGLE_ID_END; i++) {
@@ -57,7 +57,7 @@ void kb_info_save(void)
 	analog_write(PM_REG_MODE_LINK,kb_status.mode_link&LINK_PIPE_CODE_OK);
 	analog_write(PM_REG_CHECK,check);
 	//analog_write(PM_REG_COUNT,deep_count+1);
-	analog_write(PM_REG_LOCK,kb_is_lock_pressed);
+	analog_write(PM_REG_LOCK,kb_fn_is_locked);
 
 #endif
 }

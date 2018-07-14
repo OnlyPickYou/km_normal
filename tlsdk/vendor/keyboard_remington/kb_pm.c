@@ -76,14 +76,14 @@ void kb_pm_init(void)
 
 #define DEBUG_KB_NO_SUSPEND  0
 
-extern int kb_is_lock_pressed;
+extern int kb_fn_is_locked;
 
 _attribute_ram_code_ void kb_pm_proc(void)
 {
 #if(DEBUG_KB_NO_SUSPEND)
     cpu_suspend_wakeup_sim (KB_MAIN_LOOP_TIME_MS*1000);
 #else
-	kb_sleep.device_busy = ( kb_status.rf_sending || KB_LED_BUSY || (kb_is_lock_pressed && scan_pin_need));
+	kb_sleep.device_busy = ( kb_status.rf_sending || KB_LED_BUSY );
 	kb_sleep.quick_sleep = HOST_NO_LINK;
 	if ( kb_status.kb_mode <= STATE_PAIRING && kb_status.loop_cnt < KB_NO_QUICK_SLEEP_CNT){
 		kb_sleep.quick_sleep = 0;

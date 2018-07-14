@@ -107,9 +107,7 @@ _attribute_ram_code_ void irq_handler(void)
 	}
 }
 
-extern int kb_is_lock_pressed;
-
-
+extern int kb_fn_is_locked;
 
 u32 key_scaned;
 
@@ -121,16 +119,12 @@ void kb_lock_func()
 
 	if(kb_lock_status.cur_kb_cnt == 1 && kb_lock_status.cur_keycode == VK_LOCK && !kb_lock_status.last_kb_cnt){
 		//kb_lock_cnt++;
-		kb_is_lock_pressed = !kb_is_lock_pressed? KB_STATUS_LOCK : 0; //lock <-> unlock
+		kb_fn_is_locked = !kb_fn_is_locked ? 1 : 0; //lock <-> unlock
 
 		 //lock -> unlock
-		if(!kb_is_lock_pressed && kb_status.host_keyboard_status == KB_NUMLOCK_STATUS_INVALID){
-			kb_event.cnt = 0;  //send 0 to dongle, get ack to have numlcom status
-		}
-	}
-
-	if(kb_is_lock_pressed){
-		key_scaned = 0;
+//		if(!kb_fn_is_locked && kb_status.host_keyboard_status == KB_NUMLOCK_STATUS_INVALID){
+//			kb_event.cnt = 0;  //send 0 to dongle, get ack to have numlcom status
+//		}
 	}
 
 	kb_lock_status.last_kb_cnt = kb_event.cnt;
@@ -140,7 +134,7 @@ void main_loop(void)
 {
 	cpu_rc_tracking_en(RC_TRACKING_32M_ENABLE);
 	batt_det_count++;
-	key_scaned = kb_scan_key (kb_status.host_keyboard_status | kb_is_lock_pressed, !km_dat_sending);
+	key_scaned = kb_scan_key (kb_status.host_keyboard_status, !km_dat_sending);
 
 	if(key_scaned){
 		kb_lock_func();
