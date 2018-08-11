@@ -57,7 +57,7 @@ u8 configuration_desc_mouse[25] =  {       //len = 9 + 9 + 7 = 25
 									0x21, 			 //CountryCode = USB_HID_COUNTRY_US
 									1,               //TotalReportDescriptors
 									0x22,            //HIDReportType = HID_DTYPE_Report
-									0x8e, 0x00,      //HIDReportLength[2] = {sizeof(mouse_report_desc), 0x00}
+									0x8f, 0x00,      //HIDReportLength[2] = {sizeof(mouse_report_desc), 0x00}
 							//USB_Descriptor_Endpoint_t   mouse_in_endpoint
 									0x07, 			//size = sizeof(USB_Descriptor_Endpoint_t)
 									0x05,     		//type = DTYPE_Endpoint
@@ -195,7 +195,7 @@ u8 device_desc_km[18] = {
 		0x00, 		// SubClass : USB_CSCP_NoDeviceSubclass
 		0x00, 		// Protocol : USB_CSCP_NoDeviceProtocol
 		8,          // Endpoint0Size, Maximum Packet Size for Zero Endpoint. Valid Sizes are 8, 16, 32, 64
-		0x8A,0x24,  // VendorID 蘇硉 0x248a   8  9
+		0x8A,0x24,  // VendorID 铇囷牂纭�0x248a   8  9
 		0x66,0x83,  // ProductID defult value   mouse only:8366  mouse_keyboard_kit:8367
 		0x00,0x01, 	// 0x0100 : ReleaseNumber
 		1, 			// ManufacturerStrIndex = USB_STRING_VENDOR   @@@ pay attention

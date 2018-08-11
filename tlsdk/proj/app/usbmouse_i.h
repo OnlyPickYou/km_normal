@@ -181,7 +181,7 @@ static const USB_Descriptor_HIDReport_Datatype_t mouse_report_desc[] = {
 	0x19, 0x01, //     USAGE_MINIMUM (Button 1)
 
 	//这是一个局部条目，说明用途的最大值为3。实际上是鼠标中键。
-	0x29, 0x05, //     USAGE_MAXIMUM (Button 5)
+	0x29, 0x03, //     USAGE_MAXIMUM (Button 5)
 
 	//这是一个全局条目，说明返回的数据的逻辑值（就是我们返回的数据域的值啦）
 	//最小为0。因为我们这里用Bit来表示一个数据域，因此最小为0，最大为1。
@@ -191,7 +191,7 @@ static const USB_Descriptor_HIDReport_Datatype_t mouse_report_desc[] = {
 	0x25, 0x01, //     LOGICAL_MAXIMUM (1)
 
 	//这是一个全局条目，说明total button 数量为5个。
-	0x95, 0x05, //     REPORT_COUNT (3)
+	0x95, 0x03, //     REPORT_COUNT (3)
 	//这是一个全局条目，说明每个数据域的长度为1个bit。
 	0x75, 0x01, //     REPORT_SIZE (1)
 
@@ -207,7 +207,7 @@ static const USB_Descriptor_HIDReport_Datatype_t mouse_report_desc[] = {
 	//这是一个全局条目，说明数据域数量为1个
 	0x95, 0x01, //     REPORT_COUNT (1)
 	//这是一个全局条目，说明每个数据域的长度为3bit。
-	0x75, 0x03, //     REPORT_SIZE (3)
+	0x75, 0x05, //     REPORT_SIZE (3)
 
 
 	//这是一个主条目，输入用，由前面两个全局条目可知，长度为3bit，
@@ -230,11 +230,11 @@ static const USB_Descriptor_HIDReport_Datatype_t mouse_report_desc[] = {
 	//相对值的意思就是，当指针移动时，只发送移动量。
 	//往右移动时，X值为正；往下移动时，Y值为正。
 	//对于滚轮，当滚轮往上滚时，值为正。
-	0x15, 0x81, //     LOGICAL_MINIMUM (-127)
-	0x25, 0x7f, //     LOGICAL_MAXIMUM (127)
+	0x15, 0x00, //     LOGICAL_MINIMUM (-127)
+	0x26, 0xff,0x7f, //     LOGICAL_MAXIMUM (127)
 
 	//这是一个全局条目，说明数据域的长度为8bit。
-	0x75, 0x08, //     REPORT_SIZE (16)
+	0x75, 0x10, //     REPORT_SIZE (16)
 
 	//这是一个全局条目，说明数据域的个数为2个。
 	0x95, 0x02, //     REPORT_COUNT (2)
@@ -243,7 +243,7 @@ static const USB_Descriptor_HIDReport_Datatype_t mouse_report_desc[] = {
 	//属性为：Data,Var,Rel。Data说明数据是可以变的，Var说明
 	//这些数据域是独立的，即第一个8bit表示X轴，第二个8bit表示
 	//Y轴，第三个8bit表示滚轮。Rel表示这些值是相对值。
-	0x81, 0x06, //     INPUT (Data,Var,Rel)
+	0x81, 0x02, //     INPUT (Data,Var,Rel)
 
 	//这是一个局部条目，说明用途为滚轮
 	0x09, 0x38, //     USAGE (Wheel)

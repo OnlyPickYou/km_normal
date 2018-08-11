@@ -107,6 +107,7 @@ _attribute_ram_code_ void irq_handler(void)
 	}
 }
 
+extern u8 kb_is_fn_pressed;
 extern int kb_fn_is_locked;
 
 u32 key_scaned;
@@ -117,7 +118,7 @@ void kb_lock_func()
 	kb_lock_status.cur_kb_cnt = kb_event.cnt;
 	kb_lock_status.cur_keycode = kb_event.keycode[0];
 
-	if(kb_lock_status.cur_kb_cnt == 1 && kb_lock_status.cur_keycode == VK_LOCK && !kb_lock_status.last_kb_cnt){
+	if(kb_is_fn_pressed && kb_lock_status.cur_kb_cnt == 1 && kb_lock_status.cur_keycode == VK_LOCK && !kb_lock_status.last_kb_cnt){
 		//kb_lock_cnt++;
 		kb_fn_is_locked = !kb_fn_is_locked ? 1 : 0; //lock <-> unlock
 

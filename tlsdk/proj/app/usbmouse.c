@@ -20,6 +20,7 @@ static u8  usbmouse_wptr, usbmouse_rptr;
 static u32 usbmouse_not_released;
 static u32 usbmouse_data_report_time;
 
+abs_mouse_dat_t abs_mouse_dat = {0, 0, 0, 0};
 
 int sm_sum_x, sm_pre_x, sm_sum_y, sm_pre_y;
 void iir_smoother(signed char *data_x, signed char *data_y){
@@ -144,9 +145,9 @@ void usbmouse_add_frame (rf_packet_mouse_t *packet_mouse)
 
 void usbmouse_release_check(){
 	if(usbmouse_not_released && clock_time_exceed(usbmouse_data_report_time, USB_MOUSE_RELEASE_TIMEOUT)){
-	    u32 release_data = 0;
+	    u8 release_data[MOUSE_REPORT_DATA_LEN + 2] = {0};
 
-	    if(usbmouse_hid_report(USB_HID_MOUSE, (u8*)(&release_data), MOUSE_REPORT_DATA_LEN)){
+	    if(usbmouse_hid_report(USB_HID_MOUSE, (u8*)(&release_data), MOUSE_REPORT_DATA_LEN+2)){
 		    usbmouse_not_released = 0;
 	    }
 	}
@@ -157,6 +158,11 @@ void usbmouse_report_frame(){
 
 #if 	USB_MOUSE_REPORT_SMOOTH
 	static u32 tick = 0;
+	static u32 btn_tick = 0;
+
+	u16 y_pos_diff = 0;
+	u16 x_pos_abs = 0;
+	u16 y_pos_abs = 0;
 	if(usbhw_is_ep_busy(USB_EDP_MOUSE)) {
 			tick = clock_time ();
 	}
@@ -172,7 +178,106 @@ void usbmouse_report_frame(){
 
 	if(usbmouse_wptr != usbmouse_rptr){
         u32 data = *(u32*)(&mouse_dat_buff[usbmouse_rptr]);	// that is   >  0
-        int ret = usbmouse_hid_report(USB_HID_MOUSE,(u8*)(&data), MOUSE_REPORT_DATA_LEN);
+
+        abs_mouse_dat.btn = (u8)data;
+        abs_mouse_dat.wheel = (data >> 24);
+
+        s8 x_pos = (data >> 8) & 0xff;
+        s8 y_pos = (data >> 16) & 0xff;
+
+
+        if(data == 0x01)
+        	btn_tick = !btn_tick ? (clock_time() | 1) : btn_tick;
+        else
+        	btn_tick = 0;
+
+#if 1
+        if( (x_pos & 0x80) == 0x80 ){
+        	x_pos_abs = ~(x_pos - 1);
+        	abs_mouse_dat.x -= (x_pos_abs << 4);
+           	if( abs_mouse_dat.x > 0x7fff )
+           		abs_mouse_dat.x = 0;
+        }
+        else{
+        	x_pos_abs = x_pos;
+        	abs_mouse_dat.x += (x_pos_abs << 4);
+           	if( abs_mouse_dat.x >= 0x7fff )
+           		abs_mouse_dat.x = 0x7fff;
+        }
+
+        if( (y_pos & 0x80) == 0x80){
+        	y_pos_abs = ~(y_pos - 1);
+        	abs_mouse_dat.y -= (y_pos_abs << 4);
+          	if( abs_mouse_dat.y  > 0x7fff )
+                		abs_mouse_dat.y = 0;
+        }
+        else{
+
+        	if( btn_tick  ){ //长按左键200ms以上，向下移动
+        		if(!clock_time_exceed(btn_tick, 125000)){
+        			BOUND_INC_POW2(usbmouse_rptr,USBMOUSE_BUFF_DATA_NUM);
+        			return;
+        		}
+    			btn_tick = 0;
+    			y_pos_diff = (u16)(rand() & 0x1f) << 2;
+    			abs_mouse_dat.y += y_pos_diff;
+        	}
+        	else
+        	{
+        		y_pos_abs = y_pos;
+             	abs_mouse_dat.y += (y_pos_abs << 4);
+        	}
+
+          	if(  abs_mouse_dat.y >= 0x7fff )
+                		abs_mouse_dat.y = 0x7fff;
+        }
+#else
+        if( (x_pos & 0x80) == 0x80 ){
+               	x_pos_abs = (u16)(~(x_pos - 1));
+               	x_pos_abs = (x_pos_abs << 4) & 0x07f0 ;
+               	if(abs_mouse_dat.x < x_pos_abs){
+               		abs_mouse_dat.x = 0;
+               	}
+               	else{
+               		abs_mouse_dat.x -= x_pos_abs;
+               	}
+
+        }
+        else{
+               	x_pos_abs = x_pos;
+               	x_pos_abs = (x_pos_abs << 4) & 0x07f0;
+               	abs_mouse_dat.x += x_pos_abs;
+                  	if( abs_mouse_dat.x >= 0x7fff )
+                  		abs_mouse_dat.x = 0x7fff;
+        }
+
+
+        if( (y_pos & 0x80) == 0x80){
+            y_pos_abs = (u16)(~(y_pos - 1));
+            y_pos_abs = (y_pos_abs << 4) & 0x07f0;
+            if (abs_mouse_dat.y < y_pos_abs)
+            		   abs_mouse_dat.y = 0;
+            else
+            		   abs_mouse_dat.y -= y_pos_abs;
+
+        }
+        else{
+        	if( btn_tick && clock_time_exceed(btn_tick, 200000) ){ //长按左键200ms以上，向下移动
+               	btn_tick = 0;
+               	y_pos_diff = (u16)(rand() & 0x3f) * 8;
+               	abs_mouse_dat.y += y_pos_diff;
+            }
+            else{
+                y_pos_abs = y_pos;
+                y_pos_abs = (y_pos_abs << 4) & 0x07f0;
+                abs_mouse_dat.y += y_pos_abs;
+            }
+            if(  abs_mouse_dat.y >= 0x7fff )
+            	abs_mouse_dat.y = 0x7fff;
+       }
+
+#endif
+        int ret = usbmouse_hid_report(USB_HID_MOUSE,(u8*)(&abs_mouse_dat), MOUSE_REPORT_DATA_LEN + 2);
 		if(ret){
             BOUND_INC_POW2(usbmouse_rptr,USBMOUSE_BUFF_DATA_NUM);
 		}
@@ -182,6 +287,7 @@ void usbmouse_report_frame(){
 			usbmouse_not_released = 1;
 			usbmouse_data_report_time = clock_time();
 		}
+		abs_mouse_dat.y -= y_pos_diff;
 	}
 	return;
 }

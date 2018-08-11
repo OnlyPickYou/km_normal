@@ -69,10 +69,98 @@ STATIC_ASSERT(IMPLIES((!KB_ONLY_SINGLEKEY_SUPP), KB_RETURN_KEY_MAX > 1));
 #define		KB_KEY_VALUE_MERGE		1
 #endif
 
+#ifndef		KB_FN_KEY_DEFAULT_SET
+#define		KB_FN_KEY_DEFAULT_SET   1
+#endif
+
 
 typedef u8 kb_k_mp_t[ARRAY_SIZE(drive_pins)]; //typedef u8 kb_k_mp_t[8]
 
+
 #if		KB_MAP_DEFAULT
+
+
+#if(KB_FN_KEY_DEFAULT_SET)
+
+#ifndef		KB_MAP_FN
+static const u8 kb_map_fn[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive_pins)] = {
+	{VK_PAUSE,	 VK_POWER,	  VK_EURO,		VK_SLEEP,	 	VK_RWIN,	  VK_WAKEUP,	VK_CTRL,	    VK_F5},
+	{VK_Q,		 VK_TAB,	  VK_A,			VK_LOCK,		VK_Z,		  VK_NCHG,	  	VK_TILDE,	    VK_1},
+	{VK_W,		 VK_CAPITAL,  VK_S,	        VK_K45,	    	VK_X,		  VK_CHG,	  	VK_F1,			VK_2},
+	{VK_E,		 VK_F3,		  VK_D,		    VK_F4,		    VK_C,		  VK_ROMA,	  	VK_F2,			VK_3},
+	{VK_R,		 VK_T,		  VK_F,			VK_G,			VK_V,		  VK_B,		  	VK_5,			VK_4},
+	{VK_U,		 VK_Y,		  VK_J,			VK_H,			VK_M,		  VK_N,		 	VK_6,			VK_7},
+	{VK_I,		 VK_RBRACE,	  VK_K,		    VK_F6,		    VK_COMMA,	  VK_K56,	  	VK_EQUAL,		VK_8},
+	{VK_O,	     VK_F7,  	  VK_L,   	    VK_RMB,	 		VK_PERIOD,    VK_APP, 	 	VK_F8,			VK_9},
+	{VK_P,		 VK_LBRACE,	  VK_SEMICOLON, VK_QUOTE,		VK_BACKSLASH, VK_SLASH,	  	VK_MINUS,		VK_0},
+	{VK_SCR_LOCK,VK_C9R1,	  VK_FN,	    VK_ALT,		    VK_MMODE,	  VK_RALT,	  	VK_C9R6,		VK_F12},
+	{VK_K14,	 VK_BACKSPACE,VK_BACKSLASH,	VK_NUM_LOCK ,   VK_ENTER,	  VK_PRINTSCREEN,VK_F9,		    VK_F10},
+	{VKPAD_7,	 VKPAD_4,	  VKPAD_1,	    VK_SPACE,		VK_F11,       VK_PAGE_DOWN,	VK_DELETE,		VK_POWER},
+	{VKPAD_8,	 VKPAD_5,	  VKPAD_2,	    VKPAD_0,		VKPAD_SLASH,  VK_END,	  	VK_INSERT,		VK_SLEEP},
+	{VKPAD_9,    VKPAD_6,	  VKPAD_3,		VKPAD_PERIOD,	VKPAD_ASTERIX,VKPAD_MINUS,	VK_PAGE_UP,		VK_PAGE_DOWN},
+	{VKPAD_PLUS, VK_K107,	  VKPAD_ENTER,  VK_PAGE_UP,		VK_PLAY_PAUSE,VK_HOME,	  	VK_HOME,	    VK_END},
+	{VK_WAKEUP,	 VK_SHIFT,	  VK_RSHIFT,	VK_VOL_DN,	    VK_VOL_UP,	  VK_NEXT_TRK,	VK_PREV_TRK,	VK_MEDIA},
+	{VK_MAIL,	 VK_WIN,	  VK_W_FORWRD,	VK_W_STOP,		VK_W_BACK,	  VK_W_REFRESH,	VK_W_MUTE,    	VK_W_SRCH},
+	{VK_KCL,	 VK_W_FAV,	  VK_RWIN,		VK_MY_COMP,		VK_STOP,	  VK_CAL,	  	VK_WEB,	    	VK_KCR},
+};
+#else
+static const u8 kb_map_normal[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive_pins)] = KB_MAP_NORMAL;
+#endif
+
+#ifndef			KB_MAP_NUM
+static const u8 kb_map_num[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive_pins)] = {
+	{VK_PAUSE,	 VK_POWER,	  VK_EURO,		VK_SLEEP,	 	VK_RWIN,	  VK_WAKEUP,	VK_CTRL,	    VK_VOL_DN},
+	{VK_Q,		 VK_TAB,	  VK_A,			VK_ESC,			VK_Z,		  VK_NCHG,	  	VK_TILDE,	    VK_1},
+	{VK_W,		 VK_CAPITAL,  VK_S,	        VK_K45,	    	VK_X,		  VK_CHG,	  	VK_PREV_TRK,	VK_2},
+	{VK_E,		 VK_NEXT_TRK, VK_D,			VK_W_MUTE,		VK_C,		  VK_ROMA,	  	VK_PLAY_PAUSE ,	VK_3},
+	{VK_R,		 VK_T,		  VK_F,		    VK_G,			VK_V,		  VK_B,		  	VK_5,			VK_4},
+	{VK_U,		 VK_Y,		  VK_J,		    VK_H,			VK_M,		  VK_N,		 	VK_6,			VK_7},
+	{VK_I,		 VK_RBRACE,	  VK_K,		    VK_VOL_UP,		VK_COMMA,	  VK_K56,	  	VK_EQUAL,		VK_8},
+	{VK_O,	     VK_WEB,  	  VK_L,   	    VK_RMB,	 		VK_PERIOD,    VK_APP, 	 	VK_W_SRCH,		VK_9},
+	{VK_P,		 VK_LBRACE,	  VK_SEMICOLON, VK_QUOTE,		VK_BACKSLASH, VK_SLASH,	  	VK_MINUS,		VK_0},
+	{VK_SCR_LOCK,VK_C9R1,	  VK_FN,	    VK_ALT,		    VK_MMODE,	  VK_RALT,	  	VK_C9R6,		VK_PRINTSCREEN},
+	{VK_K14,	 VK_BACKSPACE,VK_BACKSLASH,	VK_NUM_LOCK,	VK_ENTER,	  VK_PRINTSCREEN,VK_MAIL,		VK_W_FAV},
+	{VKPAD_7,	 VKPAD_4,	  VKPAD_1,	    VK_SPACE,		VK_INSERT ,  VK_DOWN,	  	VK_DELETE,		VK_POWER},
+	{VKPAD_8,	 VKPAD_5,	  VKPAD_2,	    VKPAD_0,		VKPAD_SLASH,  VK_RIGHT,	  	VK_INSERT,		VK_SLEEP},
+	{VKPAD_9,	 VKPAD_6,	  VKPAD_3,	    VKPAD_PERIOD,	VKPAD_ASTERIX,VKPAD_MINUS,	VK_PAGE_UP,		VK_PAGE_DOWN},
+	{VKPAD_PLUS, VK_K107,	  VKPAD_ENTER,  VK_UP,		    VK_PLAY_PAUSE,VK_LEFT,	  	VK_HOME,	    VK_END},
+	{VK_WAKEUP,	 VK_SHIFT,	  VK_RSHIFT,	VK_VOL_DN,	    VK_VOL_UP,	  VK_NEXT_TRK,	VK_PREV_TRK,	VK_MEDIA},
+	{VK_MAIL,	 VK_WIN,	  VK_W_FORWRD,	VK_W_STOP,		VK_W_BACK,	  VK_W_REFRESH,	VK_W_MUTE,    	VK_W_SRCH},
+	{VK_KCL,	 VK_W_FAV,	  VK_RWIN,		VK_MY_COMP,		VK_STOP,	  VK_CAL,	  	VK_WEB,	    	VK_KCR},
+};
+#else
+static const u8 kb_map_num[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive_pins)] = KB_MAP_NUM;
+#endif
+
+#ifndef			KB_MAP_NORMAL
+static const u8 kb_map_normal[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive_pins)] = {
+	{VK_PAUSE,	 VK_POWER,	  VK_EURO,		VK_SLEEP,	 	VK_RWIN,	  VK_WAKEUP,	VK_CTRL,	    VK_VOL_DN},
+	{VK_Q,		 VK_TAB,	  VK_A,			VK_ESC,		    VK_Z,		  VK_NCHG,	  	VK_TILDE,	    VK_1},
+	{VK_W,		 VK_CAPITAL,  VK_S,	        VK_K45,	    	VK_X,		  VK_CHG,	  	VK_PREV_TRK,	VK_2},
+	{VK_E,		 VK_NEXT_TRK, VK_D,			VK_W_MUTE,		VK_C,		  VK_ROMA,	  	VK_PLAY_PAUSE ,	VK_3},
+	{VK_R,		 VK_T,		  VK_F,		    VK_G,			VK_V,		  VK_B,		  	VK_5,			VK_4},
+	{VK_U,		 VK_Y,		  VK_J,		    VK_H,			VK_M,		  VK_N,		 	VK_6,			VK_7},
+	{VK_I,		 VK_RBRACE,	  VK_K,		    VK_VOL_UP,		VK_COMMA,	  VK_K56,	  	VK_EQUAL,		VK_8},
+	{VK_O,	     VK_WEB,  	  VK_L,   	    VK_RMB,	 		VK_PERIOD,    VK_APP, 	 	VK_W_SRCH,		VK_9},
+	{VK_P,		 VK_LBRACE,	  VK_SEMICOLON, VK_QUOTE,		VK_BACKSLASH, VK_SLASH,	  	VK_MINUS,		VK_0},
+	{VK_SCR_LOCK,VK_C9R1,	  VK_FN,	    VK_ALT,		    VK_MMODE,	  VK_RALT,	  	VK_C9R6,		VK_PRINTSCREEN},
+	{VK_K14,	 VK_BACKSPACE,VK_BACKSLASH,	VK_NUM_LOCK,	VK_ENTER,	  VK_PRINTSCREEN,VK_MAIL,		VK_W_FAV},
+	{VKPAD_7,	 VKPAD_4,	  VKPAD_1,	    VK_SPACE,		VK_INSERT,    VK_DOWN,	  	VK_DELETE,		VK_POWER},
+	{VKPAD_8,	 VKPAD_5,	  VKPAD_2,	    VKPAD_0,		VKPAD_SLASH,  VK_RIGHT,	  	VK_INSERT,		VK_SLEEP},
+	{VKPAD_9,	 VKPAD_6,	  VKPAD_3,	    VKPAD_PERIOD,	VKPAD_ASTERIX,VKPAD_MINUS,	VK_PAGE_UP,		VK_PAGE_DOWN},
+	{VKPAD_PLUS, VK_K107,	  VKPAD_ENTER,  VK_UP,		    VK_PLAY_PAUSE,VK_LEFT,	  	VK_HOME,	    VK_END},
+	{VK_WAKEUP,	 VK_SHIFT,	  VK_RSHIFT,	VK_VOL_DN,	    VK_VOL_UP,	  VK_NEXT_TRK,	VK_PREV_TRK,	VK_MEDIA},
+	{VK_MAIL,	 VK_WIN,	  VK_W_FORWRD,	VK_W_STOP,		VK_W_BACK,	  VK_W_REFRESH,	VK_W_MUTE,    	VK_W_SRCH},
+	{VK_KCL,	 VK_W_FAV,	  VK_RWIN,		VK_MY_COMP,		VK_STOP,	  VK_CAL,	  	VK_WEB,	    	VK_KCR},
+
+};
+
+#else
+static const u8 kb_map_fn[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive_pins)] = KB_MAP_FN;
+#endif
+
+
+#else
 
 
 #ifndef			KB_MAP_NORMAL
@@ -152,6 +240,7 @@ static const u8 kb_map_fn[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive_pins)] = {
 static const u8 kb_map_fn[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive_pins)] = KB_MAP_FN;
 #endif
 
+#endif		//end of KB_FN_KEY_DEFAULT_SET
 
 #define small_keyboard_enable  		0
 
@@ -816,7 +905,7 @@ static inline void kb_remap_key_row(int drv_ind, u32 m, int key_max, kb_data_t *
 static inline void kb_remap_key_code(u32 * pressed_matrix, int key_max, kb_data_t *kb_data, int numlock_status)
 {
 
-	kb_k_mp = kb_p_map[(kb_is_fn_pressed&1) | ( (numlock_status&1)<< 1)];
+	kb_k_mp = kb_p_map[ ((kb_is_fn_pressed&1) || (kb_fn_is_locked&1 ))  | ( (numlock_status&1)<< 1)];
 	foreach_arr(i, drive_pins){
 		u32 m = pressed_matrix[i];
 //		a_debug_remap = 0xcc;
@@ -883,7 +972,7 @@ static u32 kb_scan_row(int drv_ind, u8 * gpio)
 		if(scan_pin_need & BIT(j)){
 			int key = !gpio_read_cache (scan_pins[j], gpio);
 			if(KB_LINE_HIGH_VALID != key) {
-				if(kb_fn_is_locked || (KB_HAS_FN_KEY && (kb_k_mp[j][(drv_ind+7)&7] == VK_FN)) ) {
+				if( (KB_HAS_FN_KEY && (kb_k_mp[j][(drv_ind+7)&7] == VK_FN)) ) {
 					kb_is_fn_pressed = 1;
 
 				}
